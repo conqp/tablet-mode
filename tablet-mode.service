@@ -1,5 +1,5 @@
 [Unit]
-Description=Disable Keyboard and touchpad for tablet mode
+Description=Disable keyboard and touchpad for tablet mode
 
 [Service]
 ExecStart=/usr/bin/tablet-mode
