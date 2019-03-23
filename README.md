@@ -4,7 +4,7 @@ Allow users to toggle a convertible laptop between laptop and tablet mode.
 
 ## Configuration
 
-The keyboard device to be deactivated in tablet mode must be specified in `/etc/tablet-mode.conf`:
+The keyboard and touchpad devices to be deactivated in tablet mode must be specified in `/etc/tablet-mode.conf`:
 
     [Devices]
     keyboard = /dev/input/by-path/platform-i8042-serio-0-event-kbd
