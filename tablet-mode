@@ -2,7 +2,9 @@
 """Grabs the respective device to discard any input from it."""
 
 from configparser import ConfigParser
+from contextlib import suppress
 from subprocess import run
+from threading import Thread
 
 
 CONFIG_FILE = '/etc/tablet-mode.conf'
@@ -15,13 +17,32 @@ def grab_device(device):
     return run((EVTEST, '--grab', device))
 
 
-def get_device():
+def get_devices():
     """Reads the device from the config file."""
 
     parser = ConfigParser()
     parser.read(CONFIG_FILE)
-    return parser['Device']['keyboard']
+
+    with suppress(KeyError):
+        yield parser['Devices']['keyboard']
+
+    with suppress(KeyError):
+        yield parser['Devices']['touchpad']
+
+
+def disable_devices(devices):
+    """Disables the given devices."""
+
+    threads = []
+
+    for device in devices:
+        thread = Thread(target=grab_device, args=[device])
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
 
 
 if __name__ == '__main__':
-    grab_device(get_device())
+    disable_devices(get_devices())
