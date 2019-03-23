@@ -1,0 +1,10 @@
+#! /bin/bash
+
+if ( systemctl status tablet-mode.service ); then
+    sudo systemctl stop tablet-mode.service
+    notify-send "Laptop mode" "The system is now in laptop mode."
+else
+    sudo systemctl start tablet-mode.service
+    notify-send "Tablet mode" "The system is now in tablet mode."
+fi
+

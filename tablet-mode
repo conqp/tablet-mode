@@ -1,0 +1,27 @@
+#! /usr/bin/env python3
+"""Grabs the respective device to discard any input from it."""
+
+from configparser import ConfigParser
+from subprocess import run
+
+
+CONFIG_FILE = '/etc/tablet-mode.conf'
+EVTEST = '/usr/bin/evtest'
+
+
+def grab_device(device):
+    """Grabs the respective device via evtest."""
+
+    return run((EVTEST, '--grab', device))
+
+
+def get_device():
+    """Reads the device from the config file."""
+
+    parser = ConfigParser()
+    parser.read(CONFIG_FILE)
+    return parser['Device']['keyboard']
+
+
+if __name__ == '__main__':
+    grab_device(get_device())

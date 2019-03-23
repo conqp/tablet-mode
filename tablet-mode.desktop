@@ -1,0 +1,7 @@
+[Desktop Entry]
+Comment=Toggle tablet mode
+Terminal=false
+Name=Tablet Mode
+Exec=/usr/bin/toggle-tablet-mode
+Type=Application
+Icon=pda-symbolic
