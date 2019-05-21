@@ -1,1 +1,13 @@
-%tablet ALL=(ALL) NOPASSWD: /usr/bin/systemctl start tablet-mode.service, /usr/bin/systemctl stop tablet-mode.service
+# This file is part of tablet-mode.
+#
+# It allows users in the group "tablet" to toggle
+# the system between tablet and laptop mode.
+#
+################################################################################
+
+Cmnd_Alias START_LAPTOP_MODE = /usr/bin/systemctl start laptop-mode.service
+Cmnd_Alias STOP_LAPTOP_MODE = /usr/bin/systemctl stop laptop-mode.service
+Cmnd_Alias START_TABLET_MODE = /usr/bin/systemctl start tablet-mode.service
+Cmnd_Alias STOP_TABLET_MODE = /usr/bin/systemctl stop tablet-mode.service
+
+%tablet ALL=(ALL) NOPASSWD: START_LAPTOP_MODE, STOP_LAPTOP_MODE, START_TABLET_MODE, STOP_TABLET_MODE

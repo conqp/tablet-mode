@@ -1,6 +1,10 @@
 [Unit]
-Description=Disable keyboard and touchpad for tablet mode
+Description=Configure system for tablet mode
+Conflicts=laptop-mode.service
 
 [Service]
-ExecStart=/usr/bin/tablet-mode
+ExecStart=/usr/bin/setsysmode tablet
 StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

@@ -2,6 +2,6 @@
 Comment=Toggle tablet mode
 Terminal=false
 Name=Tablet Mode
-Exec=/usr/bin/toggle-tablet-mode
+Exec=/usr/bin/setsysmode toggle
 Type=Application
 Icon=pda-symbolic
