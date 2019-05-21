@@ -3,7 +3,7 @@ Description=Configure system for tablet mode
 Conflicts=laptop-mode.service
 
 [Service]
-ExecStart=/usr/bin/setsysmode tablet
+ExecStart=/usr/bin/sysmoded tablet
 StandardOutput=null
 
 [Install]

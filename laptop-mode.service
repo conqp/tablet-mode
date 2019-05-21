@@ -3,7 +3,7 @@ Description=Configure system for laptop mode
 Conflicts=tablet-mode.service
 
 [Service]
-ExecStart=/usr/bin/setsysmode laptop
+ExecStart=/usr/bin/sysmoded laptop
 StandardOutput=null
 
 [Install]
