@@ -127,3 +127,7 @@ def main():
         tablet_mode(arguments.notify)
     else:
         print('Must specify a mode.', file=stderr, flush=True)
+
+
+if __name__ == '__main__':
+    main()
