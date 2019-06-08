@@ -68,15 +68,15 @@ def notify_tablet_mode():
 def toggle_mode(notify):
     """Toggles between laptop and tablet mode."""
 
-    if systemctl('status', LAPTOP_MODE_SERVICE):
-        systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
-        systemctl('start', TABLET_MODE_SERVICE, root=True)
+    if systemctl('status', TABLET_MODE_SERVICE):
+        systemctl('stop', TABLET_MODE_SERVICE, root=True)
+        systemctl('start', LAPTOP_MODE_SERVICE, root=True)
 
         if notify:
             notify_tablet_mode()
     else:
-        systemctl('stop', TABLET_MODE_SERVICE, root=True)
-        systemctl('start', LAPTOP_MODE_SERVICE, root=True)
+        systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
+        systemctl('start', TABLET_MODE_SERVICE, root=True)
 
         if notify:
             notify_laptop_mode()
