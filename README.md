@@ -16,4 +16,4 @@ The devices to be deactivated in either *tablet* or *laptop* mode must be specif
 ## Usage
 
 You must be a member of the group `tablet` to toggle between tablet and laptop mode.  
-You can toggle between tablet and laptop mode by running `toggle-tablet-mode` or use the desktop icon provided with this package.
+You can toggle between tablet and laptop mode by running `setsysmode toggle` or use the desktop icon provided with this package.
