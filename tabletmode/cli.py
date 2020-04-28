@@ -67,23 +67,6 @@ def notify_tablet_mode():
     return notify_send('Tablet mode.', 'The system is now in tablet mode.')
 
 
-def toggle_mode(notify=False):
-    """Toggles between laptop and tablet mode."""
-
-    if systemctl('status', TABLET_MODE_SERVICE):
-        systemctl('stop', TABLET_MODE_SERVICE, root=True)
-        systemctl('start', LAPTOP_MODE_SERVICE, root=True)
-
-        if notify:
-            notify_tablet_mode()
-    else:
-        systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
-        systemctl('start', TABLET_MODE_SERVICE, root=True)
-
-        if notify:
-            notify_laptop_mode()
-
-
 def default_mode(notify=False):
     """Restores all blocked input devices."""
 
@@ -112,6 +95,15 @@ def tablet_mode(notify=False):
 
     if notify:
         notify_tablet_mode()
+
+
+def toggle_mode(notify=False):
+    """Toggles between laptop and tablet mode."""
+
+    if systemctl('status', TABLET_MODE_SERVICE):
+        laptop_mode(notify=notify)
+    else:
+        tablet_mode(notify=notify)
 
 
 def main():
