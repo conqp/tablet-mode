@@ -10,7 +10,12 @@ setup(
     author_email='mail@richard-neumann.de',
     python_requires='>=3.8',
     packages=['tabletmode'],
-    scripts=['setsysmode', 'sysmoded'],
+    entry_points={
+        'console_scripts': [
+            'setsysmode = tabletmode.cli:main',
+            'sysmoded = tabletmode.daemon:main'
+        ],
+    },
     url='https://github.com/conqp/tablet-mode',
     license='GPLv3',
     description='Tablet mode switch for GNOME 3.',
