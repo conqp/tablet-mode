@@ -1,11 +1,16 @@
 
 """Sets the system mode."""
 
-from argparse import ArgumentParser
-from subprocess import DEVNULL, CalledProcessError, check_call, run
+from argparse import ArgumentParser, Namespace
+from subprocess import DEVNULL
+from subprocess import CalledProcessError
+from subprocess import CompletedProcess
+from subprocess import check_call
+from subprocess import run
 from sys import stderr
+from typing import Optional
 
-from tabletmode.config import load_configuration
+from tabletmode.config import load_config
 
 
 DESCRIPTION = 'Sets or toggles the system mode.'
@@ -13,7 +18,7 @@ LAPTOP_MODE_SERVICE = 'laptop-mode.service'
 TABLET_MODE_SERVICE = 'tablet-mode.service'
 
 
-def get_arguments():
+def get_args() -> Namespace:
     """Returns the CLI arguments."""
 
     parser = ArgumentParser(description=DESCRIPTION)
@@ -28,13 +33,11 @@ def get_arguments():
     return parser.parse_args()
 
 
-def systemctl(action, unit, *, root=False):
+def systemctl(action: str, unit: str, *, root: bool = False) -> bool:
     """Runs systemctl."""
 
     command = ['/usr/bin/sudo'] if root else []
-    command.append('systemctl')
-    command.append(action)
-    command.append(unit)
+    command += ['systemctl', action, unit]
 
     try:
         check_call(command, stdout=DEVNULL)     # Return 0 on success.
@@ -44,7 +47,7 @@ def systemctl(action, unit, *, root=False):
     return True
 
 
-def notify_send(summary, body=None):
+def notify_send(summary: str, body: Optional[str] = None) -> CompletedProcess:
     """Sends the respective message."""
 
     command = ['/usr/bin/notify-send', summary]
@@ -55,19 +58,19 @@ def notify_send(summary, body=None):
     return run(command, stdout=DEVNULL, check=False)
 
 
-def notify_laptop_mode():
+def notify_laptop_mode() -> CompletedProcess:
     """Notifies about laptop mode."""
 
     return notify_send('Laptop mode.', 'The system is now in laptop mode.')
 
 
-def notify_tablet_mode():
+def notify_tablet_mode() -> CompletedProcess:
     """Notifies about tablet mode."""
 
     return notify_send('Tablet mode.', 'The system is now in tablet mode.')
 
 
-def default_mode(notify=False):
+def default_mode(notify: bool = False) -> None:
     """Restores all blocked input devices."""
 
     systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
@@ -77,7 +80,7 @@ def default_mode(notify=False):
         notify_send('Default mode.', 'The system is now in default mode.')
 
 
-def laptop_mode(notify=False):
+def laptop_mode(notify: bool = False) -> None:
     """Starts the laptop mode."""
 
     systemctl('stop', TABLET_MODE_SERVICE, root=True)
@@ -87,7 +90,7 @@ def laptop_mode(notify=False):
         notify_laptop_mode()
 
 
-def tablet_mode(notify=False):
+def tablet_mode(notify: bool = False) -> None:
     """Starts the tablet mode."""
 
     systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
@@ -97,7 +100,7 @@ def tablet_mode(notify=False):
         notify_tablet_mode()
 
 
-def toggle_mode(notify=False):
+def toggle_mode(notify: bool = False) -> None:
     """Toggles between laptop and tablet mode."""
 
     if systemctl('status', TABLET_MODE_SERVICE):
@@ -106,20 +109,20 @@ def toggle_mode(notify=False):
         tablet_mode(notify=notify)
 
 
-def main():
+def main() -> None:
     """Runs the main program."""
 
-    arguments = get_arguments()
-    configuration = load_configuration()
-    notify = configuration.get('notify', False) or arguments.notify
+    args = get_args()
+    config = load_config()
+    notify = config.get('notify', False) or args.notify
 
-    if arguments.mode == 'toggle':
+    if args.mode == 'toggle':
         toggle_mode(notify=notify)
-    elif arguments.mode == 'default':
+    elif args.mode == 'default':
         default_mode(notify=notify)
-    elif arguments.mode == 'laptop':
+    elif args.mode == 'laptop':
         laptop_mode(notify=notify)
-    elif arguments.mode == 'tablet':
+    elif args.mode == 'tablet':
         tablet_mode(notify=notify)
     else:
         print('Must specify a mode.', file=stderr, flush=True)

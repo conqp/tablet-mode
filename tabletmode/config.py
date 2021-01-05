@@ -5,14 +5,14 @@ from logging import getLogger
 from pathlib import Path
 
 
-__all__ = ['load_configuration']
+__all__ = ['load_config']
 
 
 CONFIG_FILE = Path('/etc/tablet-mode.json')
 LOGGER = getLogger('tabletmode')
 
 
-def load_configuration():
+def load_config() -> dict:
     """Returns the configuration."""
 
     try:
