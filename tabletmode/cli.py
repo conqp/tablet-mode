@@ -1,4 +1,3 @@
-
 """Sets the system mode."""
 
 from argparse import ArgumentParser, Namespace

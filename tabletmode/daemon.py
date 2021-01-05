@@ -1,4 +1,3 @@
-
 """System mode daemon."""
 
 from argparse import ArgumentParser, Namespace
