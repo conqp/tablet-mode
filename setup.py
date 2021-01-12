@@ -4,8 +4,8 @@ from setuptools import setup
 
 setup(
     name='tabletmode',
-    version_format='{tag}',
-    setup_requires=['setuptools-git-version'],
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     author='Richard Neumann',
     author_email='mail@richard-neumann.de',
     python_requires='>=3.8',
