@@ -15,6 +15,7 @@ from tabletmode.config import load_config
 DESCRIPTION = 'Sets or toggles the system mode.'
 LAPTOP_MODE_SERVICE = 'laptop-mode.service'
 TABLET_MODE_SERVICE = 'tablet-mode.service'
+SUDO = '/usr/bin/sudo'
 
 
 def get_args() -> Namespace:
@@ -32,10 +33,11 @@ def get_args() -> Namespace:
     return parser.parse_args()
 
 
-def systemctl(action: str, unit: str, *, root: bool = False) -> bool:
+def systemctl(action: str, unit: str, *, root: bool = False,
+              sudo: str = SUDO) -> bool:
     """Runs systemctl."""
 
-    command = ['/usr/bin/sudo'] if root else []
+    command = [sudo] if root else []
     command += ['systemctl', action, unit]
 
     try:
@@ -69,43 +71,43 @@ def notify_tablet_mode() -> CompletedProcess:
     return notify_send('Tablet mode.', 'The system is now in tablet mode.')
 
 
-def default_mode(notify: bool = False) -> None:
+def default_mode(notify: bool = False, *, sudo: str = SUDO) -> None:
     """Restores all blocked input devices."""
 
-    systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
-    systemctl('stop', TABLET_MODE_SERVICE, root=True)
+    systemctl('stop', LAPTOP_MODE_SERVICE, root=True, sudo=sudo)
+    systemctl('stop', TABLET_MODE_SERVICE, root=True, sudo=sudo)
 
     if notify:
         notify_send('Default mode.', 'The system is now in default mode.')
 
 
-def laptop_mode(notify: bool = False) -> None:
+def laptop_mode(notify: bool = False, *, sudo: str = SUDO) -> None:
     """Starts the laptop mode."""
 
-    systemctl('stop', TABLET_MODE_SERVICE, root=True)
-    systemctl('start', LAPTOP_MODE_SERVICE, root=True)
+    systemctl('stop', TABLET_MODE_SERVICE, root=True, sudo=sudo)
+    systemctl('start', LAPTOP_MODE_SERVICE, root=True, sudo=sudo)
 
     if notify:
         notify_laptop_mode()
 
 
-def tablet_mode(notify: bool = False) -> None:
+def tablet_mode(notify: bool = False, *, sudo: str = SUDO) -> None:
     """Starts the tablet mode."""
 
-    systemctl('stop', LAPTOP_MODE_SERVICE, root=True)
-    systemctl('start', TABLET_MODE_SERVICE, root=True)
+    systemctl('stop', LAPTOP_MODE_SERVICE, root=True, sudo=sudo)
+    systemctl('start', TABLET_MODE_SERVICE, root=True, sudo=sudo)
 
     if notify:
         notify_tablet_mode()
 
 
-def toggle_mode(notify: bool = False) -> None:
+def toggle_mode(notify: bool = False, *, sudo: str = SUDO) -> None:
     """Toggles between laptop and tablet mode."""
 
     if systemctl('status', TABLET_MODE_SERVICE):
-        laptop_mode(notify=notify)
+        laptop_mode(notify=notify, sudo=sudo)
     else:
-        tablet_mode(notify=notify)
+        tablet_mode(notify=notify, sudo=sudo)
 
 
 def main() -> None:
@@ -114,14 +116,15 @@ def main() -> None:
     args = get_args()
     config = load_config()
     notify = config.get('notify', False) or args.notify
+    sudo = config.get('sudo', SUDO)
 
     if args.mode == 'toggle':
-        toggle_mode(notify=notify)
+        toggle_mode(notify=notify, sudo=sudo)
     elif args.mode == 'default':
-        default_mode(notify=notify)
+        default_mode(notify=notify, sudo=sudo)
     elif args.mode == 'laptop':
-        laptop_mode(notify=notify)
+        laptop_mode(notify=notify, sudo=sudo)
     elif args.mode == 'tablet':
-        tablet_mode(notify=notify)
+        tablet_mode(notify=notify, sudo=sudo)
     else:
         print('Must specify a mode.', file=stderr, flush=True)
